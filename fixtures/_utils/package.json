@@ -1,0 +1,23 @@
+{
+	"name": "@fixtures/utils",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"main": "src/index.ts",
+	"scripts": {
+		"lint": "eslint \"./**/*.{cjs,js,jsx,ts,tsx}\"",
+		"tsc": "tsc --noEmit"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20230404.0",
+		"@tsconfig/strictest": "^2.0.0",
+		"eslint": "^8.35.0",
+		"eslint-config-ixn": "^1.4.2",
+		"typescript": "^5.0.4"
+	},
+	"dependencies": {
+		"itty-fs-router": "workspace:^",
+		"itty-router": "^3.0.11",
+		"wrangler": "^3.0.0"
+	}
+}

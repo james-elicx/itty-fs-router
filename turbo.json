@@ -1,0 +1,26 @@
+{
+	"$schema": "https://turborepo.org/schema.json",
+	"pipeline": {
+		"build": {
+			"outputs": ["dist/**"],
+			"dependsOn": ["^build"]
+		},
+		"test": {
+			"outputs": [],
+			"dependsOn": ["^test"]
+		},
+		"test:e2e": {
+			"outputs": []
+		},
+		"lint": {
+			"outputs": []
+		},
+		"tsc": {
+			"outputs": [],
+			"inputs": ["**/*.ts", "**/*.tsx", "**/tsconfig/*.json", "**/tsconfig.json"]
+		},
+		"clean": {
+			"cache": false
+		}
+	}
+}

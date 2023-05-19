@@ -1,0 +1,10 @@
+{
+	"parserOptions": {
+		"project": "./tsconfig.json"
+	},
+	"extends": ["ixn"],
+	"rules": {
+		"import/no-extraneous-dependencies": ["error", { "devDependencies": ["**/*.spec.ts"] }]
+	},
+	"ignorePatterns": ["dist"]
+}

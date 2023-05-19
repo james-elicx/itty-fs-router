@@ -1,0 +1,51 @@
+{
+	"name": "itty-fs-router",
+	"version": "0.1.0",
+	"description": "Simple and fast file-system based router, powered by itty-router.",
+	"author": "James",
+	"type": "module",
+	"bin": "./dist/cli/index.js",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"publishConfig": {
+		"directory": "dist"
+	},
+	"scripts": {
+		"dev": "nodemon --watch ./dist/index.js -x \"node ./dist/cli/index.js --dir=examples --out=worker\"",
+		"build": "vite build && node ./scripts/build.js",
+		"build:watch": "pnpm build --watch",
+		"lint": "eslint \"./**/*.{cjs,js,jsx,ts,tsx}\"",
+		"tsc": "tsc --noEmit",
+		"test": "vitest run",
+		"test:watch": "vitest"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20230404.0",
+		"@tsconfig/strictest": "^2.0.0",
+		"@types/mock-fs": "^4.13.1",
+		"@types/node": "^18.15.11",
+		"eslint": "^8.35.0",
+		"eslint-config-ixn": "^1.4.2",
+		"mock-fs": "^5.2.0",
+		"nodemon": "^2.0.22",
+		"prettier": "^2.8.4",
+		"typescript": "^5.0.4",
+		"vite": "^4.3.5",
+		"vite-plugin-dts": "^2.3.0",
+		"vite-plugin-externalize-deps": "^0.6.0",
+		"vitest": "^0.31.0",
+		"vitest-environment-miniflare": "^2.14.0",
+		"wrangler": "^3.0.0"
+	},
+	"dependencies": {
+		"esbuild": "^0.17.17",
+		"ts-morph": "^18.0.0"
+	},
+	"peerDependencies": {
+		"itty-router": "^3.0.11"
+	}
+}

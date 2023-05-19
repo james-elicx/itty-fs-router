@@ -1,0 +1,20 @@
+{
+	"name": "root",
+	"version": "0.0.0",
+	"scripts": {
+		"build": "pnpm --filter itty-fs-router build",
+		"build:watch": "pnpm --filter itty-fs-router build:watch",
+		"lint": "turbo run lint",
+		"prettier": "prettier --ignore-unknown --ignore-path=.gitignore --check .",
+		"prettier:format": "prettier --ignore-unknown --ignore-path=.gitignore --write .",
+		"tsc": "turbo run tsc",
+		"test": "turbo run test",
+		"test:watch": "turbo run test:watch",
+		"test:e2e": "turbo run test:e2e"
+	},
+	"devDependencies": {
+		"@changesets/cli": "^2.26.1",
+		"prettier": "^2.8.4",
+		"turbo": "^1.9.8"
+	}
+}
