@@ -90,16 +90,16 @@ const parseCliError = (e: Error | z.ZodError | unknown): ParseCliErrorReturns =>
  */
 export const printHelpMessage = () => {
 	console.log(`
-	Usage: itty-fs-router [options]
+  Usage: itty-fs-router [options]
 
-	Options:
-		--help						Show this help message
-		--silent					Don't log anything to the console
-		--skip-minify			Don't minify the output
-		--root-dir				The root directory to search for files in
-		--out-dir					The output directory to write the router to
-		--base-path				The base path to use for the router
-	`);
+  Options:
+    --help             Show this help message
+    --silent           Don't log anything to the console
+    --skip-minify      Don't minify the output
+    --root-dir         The root directory to search for files in
+    --out-dir          The output directory to write the router to
+    --base-path        The base path to use for the router
+  `);
 };
 
 /**
