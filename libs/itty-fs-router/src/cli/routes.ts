@@ -54,7 +54,6 @@ export const addOptionRoutes = (
 ) => {
 	const methods = getExportedOptionKeys(options.get(option), validMethods);
 	for (const method of methods) {
-		console.log(`${route}${wildcard ? '*' : ''}`);
 		routes.push([
 			method,
 			createRouteExpression(`${route}${wildcard ? '*' : ''}`),
