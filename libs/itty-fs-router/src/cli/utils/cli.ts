@@ -1,4 +1,3 @@
-import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { z } from 'zod';
 import { argumentParser } from 'zodcli';
@@ -14,8 +13,8 @@ const booleanFlag = z
 	.default('false');
 
 // shared flag for directories
-type DirectoryFlagArgs = { name: string; fallback: string; shouldExist?: boolean };
-const directoryFlag = ({ name, fallback, shouldExist = false }: DirectoryFlagArgs) =>
+type DirectoryFlagArgs = { name: string; fallback: string };
+const directoryFlag = ({ name, fallback }: DirectoryFlagArgs) =>
 	z
 		.string()
 		.optional()
@@ -24,10 +23,7 @@ const directoryFlag = ({ name, fallback, shouldExist = false }: DirectoryFlagArg
 		.refine(
 			(path) => path.startsWith(normalizePath(resolve())) && path !== normalizePath(resolve()),
 			{ message: `The ${name} directory should be inside the current working directory` },
-		)
-		.refine((path) => !shouldExist || existsSync(path), {
-			message: `The ${name} directory should exist`,
-		});
+		);
 
 const options = z
 	.object({
@@ -39,7 +35,7 @@ const options = z
 			.optional()
 			.default('')
 			.transform((path) => (/^\//.test(path) ? path : `/${path}`)),
-		rootDir: directoryFlag({ name: 'root', fallback: 'src', shouldExist: true }),
+		rootDir: directoryFlag({ name: 'root', fallback: 'src' }),
 		outDir: directoryFlag({ name: 'output', fallback: 'dist' }),
 	})
 	.strict();

@@ -38,23 +38,6 @@ suite('parseArgs', () => {
 		});
 	});
 
-	test('invalid root dir (doesnt exist) prints error and exits', () => {
-		process.argv = ['node', 'index.js', '--root-dir=invalid'];
-		const exitMock = mockProcessExit();
-		const consoleMock = mockConsoleErr();
-
-		expect(parseArgs()).toEqual(null);
-
-		expect(exitMock).toHaveBeenCalledTimes(1);
-		exitMock.mockRestore();
-
-		expect(consoleMock).toHaveBeenCalledTimes(1);
-		expect(consoleMock).toHaveBeenCalledWith(
-			expect.stringMatching(/The root directory should exist/),
-		);
-		consoleMock.mockRestore();
-	});
-
 	test('invalid outdir (outside directory) prints error and exits', () => {
 		process.argv = ['node', 'index.js', '--out-dir=../invalid'];
 		const exitMock = mockProcessExit();
