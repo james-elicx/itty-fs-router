@@ -1,4 +1,4 @@
-import type { MiddlewareConfig, RouteHandler } from 'itty-fs-router';
+import type { Middleware, RouteHandler } from 'itty-fs-router';
 
 export const ALL: RouteHandler = (req) => {
 	const middlewareCtx = req.ctx['from-middleware'];
@@ -6,7 +6,7 @@ export const ALL: RouteHandler = (req) => {
 	return new Response(`Middleware Context: '${middlewareCtx}'`);
 };
 
-export const middleware: MiddlewareConfig = {
+export const middleware: Middleware = {
 	GET: (req) => {
 		req.ctx['from-middleware'] = 'Context from middleware';
 	},

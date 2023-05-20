@@ -22,7 +22,8 @@
 		"tsc": "tsc --noEmit",
 		"test": "vitest run",
 		"test:watch": "vitest",
-		"test:coverage": "vitest run --coverage"
+		"test:coverage": "vitest run --coverage",
+		"alter-version": "node ./scripts/alter-version.js"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20230404.0",

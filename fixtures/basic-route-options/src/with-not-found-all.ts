@@ -1,5 +1,5 @@
-import type { MiddlewareConfig } from 'itty-fs-router';
+import type { NotFound } from 'itty-fs-router';
 
-export const notFound: MiddlewareConfig = {
+export const notFound: NotFound = {
 	ALL: () => new Response('Custom not found!!', { status: 404 }),
 };
