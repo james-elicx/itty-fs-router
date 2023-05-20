@@ -12,6 +12,12 @@ const __filename = fileURLToPath(import.meta.url);
 // eslint-disable-next-line no-underscore-dangle, @typescript-eslint/naming-convention
 const __dirname = dirname(__filename);
 
+/**
+ * Converts processed routes into a string to be injected into the worker script.
+ *
+ * @param routes Processed routes to pass to Itty.
+ * @returns A string of the routes to be injected into the worker script.
+ */
 const getRoutesStr = (routes: ProcessedRoute[]): string => {
 	return `export const __ROUTES__ = [${routes
 		.map(
@@ -21,7 +27,7 @@ const getRoutesStr = (routes: ProcessedRoute[]): string => {
 };
 
 /**
- * Build a worker file from processed routes.
+ * Builds a worker file from processed routes.
  *
  * @param routes Processed routes to pass to Itty.
  * @param args The base path, minification, and output directory settings.

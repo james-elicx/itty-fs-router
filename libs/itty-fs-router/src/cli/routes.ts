@@ -16,7 +16,7 @@ import type { Args, GroupedExportedDeclarations, OptionExport } from './utils';
 // TODO: `_config` for that directory and its descendants.
 
 /**
- * Create a regular expression for a route path.
+ * Creates a regular expression for a route path.
  *
  * This uses the the same syntax and rules as itty-router - they were taken directory from the
  * source code.
@@ -37,7 +37,7 @@ const createRouteExpression = (route: string) =>
 	);
 
 /**
- * Add routes for the methods of an option.
+ * Adds routes for the methods of an option.
  *
  * @param routes Processed routes array.
  * @param options Exported declarations grouped by option.
@@ -54,6 +54,7 @@ export const addOptionRoutes = (
 ) => {
 	const methods = getExportedOptionKeys(options.get(option), validMethods);
 	for (const method of methods) {
+		console.log(`${route}${wildcard ? '*' : ''}`);
 		routes.push([
 			method,
 			createRouteExpression(`${route}${wildcard ? '*' : ''}`),
@@ -63,6 +64,14 @@ export const addOptionRoutes = (
 };
 
 export type ProcessedRoute = [string, RegExp, string[]];
+
+/**
+ * Processes the routes so that they can be passed to Itty.
+ *
+ * @param routes Array of route paths.
+ * @param args The root directory and base path.
+ * @returns Processed routes to pass to Itty.
+ */
 export const processRoutes = (
 	routes: string[],
 	{ rootDir, basePath }: Pick<Args, 'basePath' | 'rootDir'>,

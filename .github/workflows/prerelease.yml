@@ -1,0 +1,114 @@
+name: Pre-Release
+
+# Adapted from the following two workflows:
+# https://github.com/cloudflare/next-on-pages/blob/main/.github/workflows/create-pullrequest-prerelease.yml
+# https://github.com/cloudflare/next-on-pages/blob/main/.github/workflows/write-prerelease-comment.yml
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  publish:
+    name: Publish Pre-Release to Internal Registry
+    if: ${{ github.repository_owner == 'james_elicx' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for checks to pass
+        uses: lewagon/wait-on-check-action@v1.3.1
+        with:
+          ref: ${{ github.ref }}
+          check-name: 'E2E Tests'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+
+      - name: Set outputs
+        id: hash
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Alter version
+        run: pnpm --filter itty-fs-router alter-version ${{ steps.hash.outputs.sha_short }} PR=${{ github.event.number }}
+
+      - name: Build
+        run: pnpm build
+
+      - name: Package
+        run: |
+          cd libs/itty-fs-router
+          pnpm pack
+          cd ../..
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: npm-package-itty-fs-router-${{ github.event.number }} # encode the PR number into the artifact name
+          path: libs/itty-fs-router/dist/itty-fs-router-*.tgz
+
+  comment:
+    name: Comment on PR
+    if: ${{ github.repository_owner == 'james_elicx' }}
+    needs: [publish]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Put PR and workflow ID into env
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.payload.workflow_run.id,
+            });
+
+            for (const artifact of allArtifacts.data.artifacts) {
+              // Extract the PR number from the artifact name
+              const match = /^npm-package-itty-fs-router-(\d+)$/.exec(artifact.name);
+              if (match) {
+                require("fs").appendFileSync(
+                  process.env.GITHUB_ENV,
+                  `\nWORKFLOW_RUN_PR=${match[1]}` +
+                    `\nWORKFLOW_RUN_ID=${context.payload.workflow_run.id}`
+                );
+                break;
+              }
+            }
+
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          number: ${{ env.WORKFLOW_RUN_PR }}
+          message: |
+            🧪 A prerelease is available for testing 🧪
+
+            <details>
+
+            You can install this latest build in your project with:
+
+            ```sh
+            npm install --save-dev https://prerelease-registry.ixion-labs.workers.dev/james-elicx/itty-fs-router/runs/${{ env.WORKFLOW_RUN_ID }}/npm-package-itty-fs-router-${{ env.WORKFLOW_RUN_PR }}
+            ```
+
+            Or you can immediately run this with `npx`:
+
+            ```sh
+            npx https://prerelease-registry.ixion-labs.workers.dev/james-elicx/itty-fs-router/runs/${{ env.WORKFLOW_RUN_ID }}/npm-package-itty-fs-router-${{ env.WORKFLOW_RUN_PR }}
+            ```
+
+            </details>

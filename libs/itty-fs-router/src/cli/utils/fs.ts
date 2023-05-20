@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { goErrSync } from './err';
 
 /**
- * Normalize a path name. Useful for Windows paths.
+ * Normalizes a path name. Useful for Windows paths.
  *
  * @param path Path name to normalize.
  * @returns Normalized path name.
@@ -12,7 +12,7 @@ export const normalizePath = (path: string): string =>
 	path.replace(/\\/g, '/').replace(/\/\//g, '/');
 
 /**
- * Read a directory's file paths recursively, filtering for `.js` and `.ts` files.
+ * Reads a directory's file paths recursively, filtering for `.js` and `.ts` files.
  *
  * @param dir Directory to read.
  * @returns Array of file paths.
@@ -20,7 +20,7 @@ export const normalizePath = (path: string): string =>
 export const readPathsRecursively = (dir: string): string[] => [
 	...new Set(
 		readdirSync(dir)
-			.filter((path) => /^[\w-]+(\.[jt]s)?$/.test(path))
+			.filter((path) => /^.+(\.[jt]s)?$/.test(path))
 			.map((path) => normalizePath(resolve(dir, path)))
 			.map((path) =>
 				goErrSync(() => statSync(path).isDirectory())[0] ? readPathsRecursively(path) : [path],
@@ -30,7 +30,7 @@ export const readPathsRecursively = (dir: string): string[] => [
 ];
 
 /**
- * Squash a path name.
+ * Squashes a path name.
  *
  * - Remove double slashes.
  * - Remove file extensions.
@@ -46,7 +46,7 @@ export const squashPath = (path: string): string =>
 		.replace(/\/index$/, '');
 
 /**
- * Create a string to require a file and access an exported variable.
+ * Creates a string to require a file and access an exported variable.
  *
  * @param path Path name to the file.
  * @param variable Exported variable name.

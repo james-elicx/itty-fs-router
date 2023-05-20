@@ -9,7 +9,9 @@
 		"esModuleInterop": true,
 		"moduleResolution": "node",
 		"stripInternal": true,
-		"exactOptionalPropertyTypes": false
+		"exactOptionalPropertyTypes": false,
+		"declaration": true,
+		"declarationMap": true
 	},
 	"include": ["src", "tests", "vite.config.ts"]
 }

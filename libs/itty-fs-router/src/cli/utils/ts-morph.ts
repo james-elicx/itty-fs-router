@@ -19,7 +19,7 @@ export const validOptions: OptionExport[] = ['middleware', 'notFound'];
 export const validExports: ValidExport[] = [...validOptions, ...validMethods];
 
 /**
- * Create a new `ts-morph` project with the given paths.
+ * Creates a new `ts-morph` project with the given paths.
  *
  * @param paths Paths to load into the `ts-morph` project.
  * @returns A new `ts-morph` project.
@@ -32,7 +32,7 @@ export const createProject = (paths: string[]) => {
 };
 
 /**
- * Retrieve the source file and AST for a given path, from the created `ts-morph` project.
+ * Retrieves the source file and AST for a given path, from the created `ts-morph` project.
  *
  * @param project The `ts-morph` project.
  * @param path Path to file to retrieve the AST for.
@@ -48,7 +48,7 @@ export const getSrcFile = (project: Project, path: string): SourceFile => {
 };
 
 /**
- * Get the exported declarations from a source file, filtering out any that are not valid exports.
+ * Gets the exported declarations from a source file, filtering out any that are not valid exports.
  *
  * @param src Source file.
  * @returns Exported declarations from the source file.
@@ -67,7 +67,7 @@ export type GroupedExportedDeclarations = {
 	options: Map<OptionExport, ExportedDeclarations[]>;
 };
 /**
- * Group together exported declarations into exported methods and exported configuration options.
+ * Groups together exported declarations into exported methods and exported configuration options.
  *
  * @param exports A map of exported declarations.
  * @returns The exported declarations grouped by method and option.
@@ -87,7 +87,7 @@ export const groupExportedDeclarations = (
 };
 
 /**
- * Get the keys of valid exported options from an exported declaration object.
+ * Gets the keys of valid exported options from an exported declaration object.
  *
  * @param exportedDeclarations A list of exported declarations.
  * @param validatorArr An array of valid keys.
