@@ -41,7 +41,6 @@ jobs:
 
   e2e:
     name: E2E Tests
-    needs: [checks]
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -64,6 +63,10 @@ jobs:
       - name: Build
         run: |
           pnpm build
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
 
       - name: Run e2e tests
         run: pnpm test:e2e

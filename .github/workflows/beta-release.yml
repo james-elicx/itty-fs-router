@@ -7,7 +7,7 @@ on:
 jobs:
   release:
     name: Beta Release
-    if: ${{ github.repository_owner == 'james_elicx' }}
+    if: ${{ github.repository_owner == 'james-elicx' }}
     runs-on: ubuntu-latest
     steps:
       - name: Wait for checks to pass
@@ -16,7 +16,7 @@ jobs:
           ref: ${{ github.ref }}
           check-name: 'E2E Tests'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10
+          wait-interval: 30
 
       - name: Check out code
         uses: actions/checkout@v3

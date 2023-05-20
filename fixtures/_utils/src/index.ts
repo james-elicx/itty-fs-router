@@ -18,7 +18,7 @@ export const createWorker = async (filePath: string): Promise<Worker> => {
 	const stop = () => worker.stop();
 
 	const request = async (path: string, opts?: RequestInit) => {
-		const url = new URL(path, `http://localhost:${worker.port}`);
+		const url = new URL(path, `http://${worker.address}:${worker.port}`);
 		const resp = await fetch(url, opts);
 
 		const text = await resp.text();
