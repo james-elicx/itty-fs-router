@@ -32,12 +32,15 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
 
+      - name: Build
+        run: |
+          pnpm build
+
       - name: ${{ matrix.script }}
         run: pnpm ${{ matrix.script }}
 
   e2e:
     name: E2E Tests
-    needs: [checks]
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -52,6 +55,14 @@ jobs:
         with:
           node-version: 18
           cache: 'pnpm'
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+
+      - name: Build
+        run: |
+          pnpm build
 
       - name: Install dependencies
         run: |

@@ -1,0 +1,28 @@
+{
+	"name": "@fixtures/basic-route-options",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "npx wrangler dev ./dist/index.js",
+		"lint": "eslint \"./**/*.{cjs,js,jsx,ts,tsx}\"",
+		"tsc": "tsc --noEmit",
+		"test:e2e": "vitest run"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20230404.0",
+		"@tsconfig/strictest": "^2.0.0",
+		"eslint": "^8.35.0",
+		"eslint-config-ixn": "^1.4.2",
+		"prettier": "^2.8.4",
+		"typescript": "^5.0.4",
+		"vite": "^4.3.5",
+		"vitest": "^0.31.0",
+		"@fixtures/utils": "workspace:^",
+		"wrangler": "^3.0.0"
+	},
+	"dependencies": {
+		"itty-fs-router": "workspace:^",
+		"itty-router": "^3.0.11"
+	}
+}

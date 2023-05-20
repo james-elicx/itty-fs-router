@@ -4,11 +4,10 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "npx itty-fs-router",
 		"dev": "npx wrangler dev ./dist/index.js",
 		"lint": "eslint \"./**/*.{cjs,js,jsx,ts,tsx}\"",
 		"tsc": "tsc --noEmit",
-		"test:e2e": "pnpm build && vitest run --environment miniflare"
+		"test:e2e": "vitest run"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20230404.0",
@@ -19,7 +18,6 @@
 		"typescript": "^5.0.4",
 		"vite": "^4.3.5",
 		"vitest": "^0.31.0",
-		"vitest-environment-miniflare": "^2.14.0",
 		"@fixtures/utils": "workspace:^",
 		"wrangler": "^3.0.0"
 	},

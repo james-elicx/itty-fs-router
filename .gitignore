@@ -11,6 +11,7 @@ coverage
 
 # build files
 dist
+custom-dist
 
 # log files
 *.log*
