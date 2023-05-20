@@ -5,14 +5,14 @@ name: Write Pre-Release Comment
 
 on:
   workflow_run:
-    workflows: ['Pre-Release']
+    workflows: [Pre-Release]
     types:
       - completed
 
 jobs:
   comment:
     name: Comment on PR
-    if: ${{ github.repository_owner == 'james-elicx' }}
+    if: ${{ github.repository_owner == 'james-elicx' && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Put PR and workflow ID into env
