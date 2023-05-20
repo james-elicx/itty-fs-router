@@ -10,7 +10,8 @@
 			"dependsOn": ["^test"]
 		},
 		"test:e2e": {
-			"outputs": []
+			"outputs": ["dist/**"],
+			"cache": false
 		},
 		"lint": {
 			"outputs": []

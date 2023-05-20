@@ -78,9 +78,86 @@ importers:
       vitest:
         specifier: ^0.31.0
         version: 0.31.0
-      vitest-environment-miniflare:
-        specifier: ^2.14.0
-        version: 2.14.0(vitest@0.31.0)
+      wrangler:
+        specifier: ^3.0.0
+        version: 3.0.0
+
+  fixtures/basic-route-options:
+    dependencies:
+      itty-fs-router:
+        specifier: workspace:^
+        version: link:../../libs/itty-fs-router/dist
+      itty-router:
+        specifier: ^3.0.11
+        version: 3.0.11
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20230404.0
+        version: 4.20230404.0
+      '@fixtures/utils':
+        specifier: workspace:^
+        version: link:../_utils
+      '@tsconfig/strictest':
+        specifier: ^2.0.0
+        version: 2.0.0
+      eslint:
+        specifier: ^8.35.0
+        version: 8.35.0
+      eslint-config-ixn:
+        specifier: ^1.4.2
+        version: 1.4.2(eslint@8.35.0)(prettier@2.8.4)(typescript@5.0.4)
+      prettier:
+        specifier: ^2.8.4
+        version: 2.8.4
+      typescript:
+        specifier: ^5.0.4
+        version: 5.0.4
+      vite:
+        specifier: ^4.3.5
+        version: 4.3.5(@types/node@18.15.11)
+      vitest:
+        specifier: ^0.31.0
+        version: 0.31.0
+      wrangler:
+        specifier: ^3.0.0
+        version: 3.0.0
+
+  fixtures/with-cli-args:
+    dependencies:
+      itty-fs-router:
+        specifier: workspace:^
+        version: link:../../libs/itty-fs-router/dist
+      itty-router:
+        specifier: ^3.0.11
+        version: 3.0.11
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20230404.0
+        version: 4.20230404.0
+      '@fixtures/utils':
+        specifier: workspace:^
+        version: link:../_utils
+      '@tsconfig/strictest':
+        specifier: ^2.0.0
+        version: 2.0.0
+      eslint:
+        specifier: ^8.35.0
+        version: 8.35.0
+      eslint-config-ixn:
+        specifier: ^1.4.2
+        version: 1.4.2(eslint@8.35.0)(prettier@2.8.4)(typescript@5.0.4)
+      prettier:
+        specifier: ^2.8.4
+        version: 2.8.4
+      typescript:
+        specifier: ^5.0.4
+        version: 5.0.4
+      vite:
+        specifier: ^4.3.5
+        version: 4.3.5(@types/node@18.15.11)
+      vitest:
+        specifier: ^0.31.0
+        version: 0.31.0
       wrangler:
         specifier: ^3.0.0
         version: 3.0.0
@@ -96,6 +173,12 @@ importers:
       ts-morph:
         specifier: ^18.0.0
         version: 18.0.0
+      zod:
+        specifier: ^3.21.4
+        version: 3.21.4
+      zodcli:
+        specifier: ^0.0.4
+        version: 0.0.4(zod@3.21.4)
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20230404.0
@@ -4555,6 +4638,12 @@ packages:
     hasBin: true
     dev: true
 
+  /typescript@4.9.5:
+    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: false
+
   /typescript@5.0.4:
     resolution: {integrity: sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==}
     engines: {node: '>=12.20'}
@@ -5029,5 +5118,14 @@ packages:
 
   /zod@3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+
+  /zodcli@0.0.4(zod@3.21.4):
+    resolution: {integrity: sha512-+WdBcf7Z19ueKI/w9SbxRXGyPnn5Fg/hc2nvOL3YKwcnhL2dvp58MvZwScvJS/Zqt4ePwSOLajboFG6su8BM8w==}
+    peerDependencies:
+      zod: ^3.21.4
+    dependencies:
+      typescript: 4.9.5
+      zod: 3.21.4
+    dev: false
 
 publishDirectory: dist
