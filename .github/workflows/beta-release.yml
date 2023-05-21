@@ -45,7 +45,10 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Publish to npm
+      - name: Set publishing config
+        run: pnpm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to npm
         run: pnpm --filter itty-fs-router publish --tag beta --no-git-checks
