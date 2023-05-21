@@ -12,6 +12,7 @@
 		"@fixtures/basic-method-routes",
 		"@fixtures/basic-route-options",
 		"@fixtures/itty-params",
-		"@fixtures/with-cli-args"
+		"@fixtures/with-cli-args",
+		"@examples/basic-api"
 	]
 }

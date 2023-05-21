@@ -8,9 +8,9 @@
 		"tsc": "tsc --noEmit"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20230404.0",
-		"@tsconfig/strictest": "^2.0.0",
-		"eslint": "^8.35.0",
+		"@cloudflare/workers-types": "^4.20230511.0",
+		"@tsconfig/strictest": "^2.0.1",
+		"eslint": "^8.41.0",
 		"eslint-config-ixn": "^1.4.2",
 		"typescript": "^5.0.4"
 	},

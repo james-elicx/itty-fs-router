@@ -1,3 +1,7 @@
 {
-	"eslint.workingDirectories": [{ "pattern": "libs/*" }, { "pattern": "fixtures/*" }]
+	"eslint.workingDirectories": [
+		{ "pattern": "libs/*" },
+		{ "pattern": "fixtures/*" },
+		{ "pattern": "examples/*" }
+	]
 }
