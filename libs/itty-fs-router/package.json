@@ -1,6 +1,6 @@
 {
 	"name": "itty-fs-router",
-	"version": "0.1.0",
+	"version": "0.2.1",
 	"description": "Simple and fast file-system based router, powered by itty-router.",
 	"license": "MIT",
 	"author": "James",

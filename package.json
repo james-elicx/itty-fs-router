@@ -9,7 +9,8 @@
 		"tsc": "turbo run tsc",
 		"test": "turbo run test",
 		"test:watch": "turbo run test:watch",
-		"test:e2e": "turbo run test:e2e"
+		"test:e2e": "turbo run test:e2e",
+		"release": "changeset publish"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.1",
