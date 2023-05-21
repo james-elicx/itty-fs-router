@@ -1,0 +1,73 @@
+name: Bug Report
+description: Report a bug or issue with this library.
+title: '[Bug] '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report a bug with this library.
+
+        Before you submit an issue, please ensure that you have done the following.
+          - Read the [documentation](https://github.com/james-elicx/itty-fs-router/tree/main/docs).
+          - Searched for existing issues.
+
+        To help us address your issue as quickly as possible, please fill out the following information.
+
+  - type: checkboxes
+    attributes:
+      label: Verify Beta Release
+      description: Please run `npm install itty-fs-router@beta` to check that your issue exists in the latest beta release of this library.
+      options:
+        - label: I verified that the issue exists in the latest beta release.
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Environment Information
+      description: Please provide information about your current environment, and the relevant packages.
+      value: |
+        ```
+        System:
+          OS: 
+        Binaries:
+          Node: 
+          npm: 
+          yarn: 
+          pnpm: 
+        Relevant Packages:
+          itty-fs-router: 
+          itty-router: 
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Description of the Issue
+      description: Please provider a clear and concise description of the issue you are experiencing.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Reproduction
+      description: |
+        Please provide a minimal reproduction of the bug, or steps to reproduce it. If possible, please provide a link to a repository on GitHub that we can clone.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional Information
+      description: Is there anything else you'd like to add, or any other information that may be relevant to this issue?
+    validations:
+      required: false
+
+  - type: checkboxes
+    attributes:
+      label: Interested in Contributing?
+      description: Would you be interested in contributing and helping to fix this bug?
+      options:
+        - label: I would like to help fix this bug.
+          required: false
