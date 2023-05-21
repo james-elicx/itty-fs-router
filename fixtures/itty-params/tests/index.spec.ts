@@ -13,94 +13,96 @@ afterAll(async () => {
 	await worker.stop();
 });
 
-suite('itty-router syntax', () => {
-	test('Fixed route', async () => {
-		const resp = await worker.fetch('/itty-router-syntax/fixed');
+['itty-router', 'itty-fs'].forEach((syntaxType) => {
+	suite(`${syntaxType} syntax`, () => {
+		test('Fixed route', async () => {
+			const resp = await worker.fetch(`/${syntaxType}-syntax/fixed`);
 
-		expect(resp.status).toEqual(200);
-		expect(resp.rawText).toMatchInlineSnapshot(`"fixed route"`);
-	});
+			expect(resp.status).toEqual(200);
+			expect(resp.rawText).toMatchInlineSnapshot(`"fixed route"`);
+		});
 
-	test('Query params', async () => {
-		const resp = await worker.fetch('/itty-router-syntax/query-params?foo=bar&baz');
+		test('Query params', async () => {
+			const resp = await worker.fetch(`/${syntaxType}-syntax/query-params?foo=bar&baz`);
 
-		expect(resp.status).toEqual(200);
-		expect(resp.rawText).toMatchInlineSnapshot(
-			`"query params: {\\"foo\\":\\"bar\\",\\"baz\\":\\"\\"}"`,
-		);
-	});
+			expect(resp.status).toEqual(200);
+			expect(resp.rawText).toMatchInlineSnapshot(
+				`"query params: {\\"foo\\":\\"bar\\",\\"baz\\":\\"\\"}"`,
+			);
+		});
 
-	test('Simple params with no param 404s', async () => {
-		const resp = await worker.fetch('/itty-router-syntax/simple-params/');
+		test('Simple params with no param 404s', async () => {
+			const resp = await worker.fetch(`/${syntaxType}-syntax/simple-params/`);
 
-		expect(resp.status).toEqual(404);
-		expect(resp.rawText).toMatchInlineSnapshot(`"Not found"`);
-	});
+			expect(resp.status).toEqual(404);
+			expect(resp.rawText).toMatchInlineSnapshot(`"Not found"`);
+		});
 
-	test('Simple params', async () => {
-		const resp = await worker.fetch('/itty-router-syntax/simple-params/123');
+		test('Simple params', async () => {
+			const resp = await worker.fetch(`/${syntaxType}-syntax/simple-params/123`);
 
-		expect(resp.status).toEqual(200);
-		expect(resp.rawText).toMatchInlineSnapshot(`"simple params: {\\"id\\":\\"123\\"}"`);
-	});
+			expect(resp.status).toEqual(200);
+			expect(resp.rawText).toMatchInlineSnapshot(`"simple params: {\\"id\\":\\"123\\"}"`);
+		});
 
-	test('File extensions with no file 404s', async () => {
-		const resp = await worker.fetch('/itty-router-syntax/file-extensions/');
+		test('File extensions with no file 404s', async () => {
+			const resp = await worker.fetch(`/${syntaxType}-syntax/file-extensions/`);
 
-		expect(resp.status).toEqual(404);
-		expect(resp.rawText).toMatchInlineSnapshot(`"Not found"`);
-	});
+			expect(resp.status).toEqual(404);
+			expect(resp.rawText).toMatchInlineSnapshot(`"Not found"`);
+		});
 
-	test('File extensions with extension', async () => {
-		const resp = await worker.fetch('/itty-router-syntax/file-extensions/manifest.json');
+		test('File extensions with extension', async () => {
+			const resp = await worker.fetch(`/${syntaxType}-syntax/file-extensions/manifest.json`);
 
-		expect(resp.status).toEqual(200);
-		expect(resp.rawText).toMatchInlineSnapshot(
-			`"file extensions: {\\"file\\":\\"manifest\\",\\"extension\\":\\"json\\"}"`,
-		);
-	});
+			expect(resp.status).toEqual(200);
+			expect(resp.rawText).toMatchInlineSnapshot(
+				`"file extensions: {\\"file\\":\\"manifest\\",\\"extension\\":\\"json\\"}"`,
+			);
+		});
 
-	test('File extensions without extension', async () => {
-		const resp = await worker.fetch('/itty-router-syntax/file-extensions/manifest');
+		test('File extensions without extension', async () => {
+			const resp = await worker.fetch(`/${syntaxType}-syntax/file-extensions/manifest`);
 
-		expect(resp.status).toEqual(200);
-		expect(resp.rawText).toMatchInlineSnapshot(`"file extensions: {\\"file\\":\\"manifest\\"}"`);
-	});
+			expect(resp.status).toEqual(200);
+			expect(resp.rawText).toMatchInlineSnapshot(`"file extensions: {\\"file\\":\\"manifest\\"}"`);
+		});
 
-	test('Option params with param', async () => {
-		const resp = await worker.fetch('/itty-router-syntax/optional-params/deploy');
+		test('Option params with param', async () => {
+			const resp = await worker.fetch(`/${syntaxType}-syntax/optional-params/deploy`);
 
-		expect(resp.status).toEqual(200);
-		expect(resp.rawText).toMatchInlineSnapshot(`"optional params: {\\"action\\":\\"deploy\\"}"`);
-	});
+			expect(resp.status).toEqual(200);
+			expect(resp.rawText).toMatchInlineSnapshot(`"optional params: {\\"action\\":\\"deploy\\"}"`);
+		});
 
-	test('Option params without param still matches', async () => {
-		const resp = await worker.fetch('/itty-router-syntax/optional-params/');
+		test('Option params without param still matches', async () => {
+			const resp = await worker.fetch(`/${syntaxType}-syntax/optional-params/`);
 
-		expect(resp.status).toEqual(200);
-		expect(resp.rawText).toMatchInlineSnapshot(`"optional params: {}"`);
-	});
+			expect(resp.status).toEqual(200);
+			expect(resp.rawText).toMatchInlineSnapshot(`"optional params: {}"`);
+		});
 
-	test('Greedy params catches everything following it', async () => {
-		const resp = await worker.fetch('/itty-router-syntax/greedy-params/https://google.com');
+		test('Greedy params catches everything following it', async () => {
+			const resp = await worker.fetch(`/${syntaxType}-syntax/greedy-params/https://google.com`);
 
-		expect(resp.status).toEqual(200);
-		expect(resp.rawText).toMatchInlineSnapshot(
-			`"greedy params: {\\"url\\":\\"https://google.com\\"}"`,
-		);
-	});
+			expect(resp.status).toEqual(200);
+			expect(resp.rawText).toMatchInlineSnapshot(
+				`"greedy params: {\\"url\\":\\"https://google.com\\"}"`,
+			);
+		});
 
-	test('Greedy params without param still matches', async () => {
-		const resp = await worker.fetch('/itty-router-syntax/greedy-params/');
+		test('Greedy params without param still matches', async () => {
+			const resp = await worker.fetch(`/${syntaxType}-syntax/greedy-params/`);
 
-		expect(resp.status).toEqual(200);
-		expect(resp.rawText).toMatchInlineSnapshot(`"greedy params: {\\"url\\":\\"\\"}"`);
-	});
+			expect(resp.status).toEqual(200);
+			expect(resp.rawText).toMatchInlineSnapshot(`"greedy params: {\\"url\\":\\"\\"}"`);
+		});
 
-	test('Wildcard catches anything after it', async () => {
-		const resp = await worker.fetch('/itty-router-syntax/wildcard/foo/bar/baz');
+		test('Wildcard catches anything after it', async () => {
+			const resp = await worker.fetch(`/${syntaxType}-syntax/wildcard/foo/bar/baz`);
 
-		expect(resp.status).toEqual(200);
-		expect(resp.rawText).toMatchInlineSnapshot(`"wildcard"`);
+			expect(resp.status).toEqual(200);
+			expect(resp.rawText).toMatchInlineSnapshot(`"wildcard"`);
+		});
 	});
 });

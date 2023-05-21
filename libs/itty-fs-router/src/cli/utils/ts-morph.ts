@@ -26,7 +26,10 @@ export const validExports: ValidExport[] = [...validOptions, ...validMethods];
  */
 export const createProject = (paths: string[]) => {
 	const project = new Project({ compilerOptions: { allowJs: true } });
-	project.addSourceFilesAtPaths(paths);
+
+	paths.forEach((path) => {
+		project.addSourceFileAtPath(path);
+	});
 
 	return project;
 };
