@@ -2,6 +2,7 @@
 	"name": "itty-fs-router",
 	"version": "0.1.0",
 	"description": "Simple and fast file-system based router, powered by itty-router.",
+	"license": "MIT",
 	"author": "James",
 	"type": "module",
 	"bin": "./dist/cli/index.js",
@@ -14,6 +15,14 @@
 	"publishConfig": {
 		"directory": "dist"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/james-elicx/itty-fs-router"
+	},
+	"bugs": {
+		"url": "https://github.com/james-elicx/itty-fs-router/issues"
+	},
+	"homepage": "https://github.com/james-elicx/itty-fs-router#readme",
 	"scripts": {
 		"dev": "nodemon --watch ./dist/index.js -x \"node ./dist/cli/index.js --dir=examples --out=worker\"",
 		"build": "vite build && node ./scripts/build.js",
