@@ -1,0 +1,33 @@
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to file a feature request.
+
+        Before you submit an issue, please ensure that you have done the following.
+          - Read the [documentation](https://github.com/james-elicx/itty-fs-router/tree/main/docs).
+          - Searched for existing feature requests.
+
+        To increase the chance of your feature request being accepted, please provide as much information as possible.
+
+  - type: textarea
+    attributes:
+      label: Description of the Feature
+      description: Please provider a detailed description of the feature you are requesting.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional Information
+      description: Is there anything else you'd like to add, or any other information that may be relevant to this feature request?
+    validations:
+      required: false
+
+  - type: checkboxes
+    attributes:
+      label: Interested in Contributing?
+      description: Would you be interested in contributing and helping to implement this feature?
+      options:
+        - label: I would like to help implement this feature.
+          required: false
