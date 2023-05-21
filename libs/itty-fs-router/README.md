@@ -16,10 +16,12 @@ Under the hood, this tooling uses [`itty-router`](https://github.com/kwhitley/it
 
 ## Features
 
-- File-system based routing
-- Middleware
-- Not found responses
-- Route params, wildcards, greedy params, and [more](https://itty.dev/itty-router/route-patterns)
+- File-system based routing.
+- [Middleware](/docs/middleware.md).
+- [Not found](/docs/not-found.md) handlers.
+- [Route patterns](/docs/route-patterns.md); params, wildcards, greedy params, and more.
+
+Support for more features is coming soon!
 
 ## Getting Started
 
@@ -51,11 +53,27 @@ export const GET: RouteHandler = () => {
 };
 ```
 
+### Route Params and Patterns
+
+Route params can be defined using two syntaxes; the one that this library provides, or the same syntax that `itty-router` uses.
+
+The syntax `itty-fs-router` (this library) provides is as follows. For more information, take a look at our [docs](/docs/route-patterns.md).
+
+- simple params: `[param]`
+- optional params: `[[param]]`
+- wildcard: `[...]`
+- greedy params: `[...param]`
+- file extensions: `[param].ext`, `name.[[ext]]`, etc.
+
+If you would like to use `itty-router`'s syntax to define route params, greedy params, wildcards, etc., check out the [itty-router docs](https://itty.dev/itty-router/route-patterns).
+
 ### Middleware and Not Found
 
 By default, `itty-fs-router` adds a global `Not found` response for any unmatched routes. This can be overriden on a per-route basis by exporting an object. (per-route segment and project-wide is coming soon)
 
 Middleware and Not Found responses can be defined on a per-method basis, or for all methods using `ALL`.
+
+Check out our documentation for [middleware](/docs/middleware.md) and [not found](/docs/not-found.md) for more information.
 
 ```ts
 // path: ./src/index.ts
@@ -84,10 +102,6 @@ export const notFound: NotFound = {
 };
 ```
 
-### Route params
-
-Route params can be defined using the same syntax that `itty-router` uses. For more information about how to define route params, greedy params, wildcards, and more, check out the [itty-router docs](https://itty.dev/itty-router/route-patterns).
-
 ### Deploying
 
 To deploy your project, you will need to build it. This can be done by running the following in your project's directory.
@@ -103,3 +117,7 @@ For more information about CLI arguments, run the following.
 ```sh
 npx itty-fs-router --help
 ```
+
+## Contributing
+
+Contributions are welcome! Please read our [contribution guidelines](/CONTRIBUTING.md) for more information.
