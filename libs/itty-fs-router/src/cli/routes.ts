@@ -15,6 +15,13 @@ import type { Args, GroupedExportedDeclarations, OptionExport } from './utils';
 
 // TODO: `_config` for that directory and its descendants.
 
+export const transformSyntax = (route: string) =>
+	route
+		.replace(/\[\.\.\.(\w+)\]/g, ':$1+') // greedy params: [...param]
+		.replace(/\[\.\.\.\]/g, '*') // wildcard: [...]
+		.replace(/\[\[(\w+)\]\]/g, ':$1?') // optional params: [[param]]
+		.replace(/\[(\w+)\]/g, ':$1'); // simple params: [param]
+
 /**
  * Creates a regular expression for a route path.
  *
@@ -28,7 +35,7 @@ import type { Args, GroupedExportedDeclarations, OptionExport } from './utils';
  */
 const createRouteExpression = (route: string) =>
 	RegExp(
-		`^${route
+		`^${transformSyntax(route)
 			.replace(/\/+(\/|$)/g, '$1') // remove multiple/trailing slash
 			.replace(/(\/?\.?):(\w+)\+/g, '($1(?<$2>*))') // greedy params
 			.replace(/(\/?\.?):(\w+)/g, '($1(?<$2>[^$1/]+?))') // named params and image format

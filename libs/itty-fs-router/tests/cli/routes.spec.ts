@@ -1,5 +1,10 @@
 import mockFs from 'mock-fs';
-import { addOptionRoutes, processRoutes, type ProcessedRoute } from 'src/cli/routes';
+import {
+	addOptionRoutes,
+	processRoutes,
+	type ProcessedRoute,
+	transformSyntax,
+} from 'src/cli/routes';
 import {
 	createProject,
 	getSrcFile,
@@ -147,6 +152,22 @@ suite('routes', () => {
 			});
 			expect(consoleMock).toHaveBeenCalledWith(`Using base path: ${basePath}`);
 			consoleMock.mockRestore();
+		});
+	});
+
+	suite('transformSyntax', () => {
+		[
+			{ name: 'greedy params', route: '/foo/[...bar]', expected: '/foo/:bar+' },
+			{ name: 'wildcard', route: '/foo/[...]', expected: '/foo/*' },
+			{ name: 'optional params', route: '/foo/[[bar]]', expected: '/foo/:bar?' },
+			{ name: 'simple params', route: '/foo/[bar]', expected: '/foo/:bar' },
+			{ name: 'file extension', route: '/foo/[bar].[[baz]]', expected: '/foo/:bar.:baz?' },
+			{ name: 'simple + simple', route: '/foo/[bar][baz]', expected: '/foo/:bar:baz' },
+			{ name: 'simple + greedy', route: '/foo/[bar][...baz]', expected: '/foo/:bar:baz+' },
+		].forEach(({ name, route, expected }) => {
+			test(name, () => {
+				expect(transformSyntax(route)).toBe(expected);
+			});
 		});
 	});
 });
