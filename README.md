@@ -10,6 +10,15 @@
 
 ---
 
+<p align="center">
+  <a href="https://npmjs.com/package/itty-fs-router" target="_blank">
+		<img alt="npm (tag)" src="https://img.shields.io/npm/v/itty-fs-router/latest?color=3777FF&style=flat-square" />
+	</a>
+	<img alt="GitHub Workflow Status (with branch)" src="https://img.shields.io/github/actions/workflow/status/james-elicx/itty-fs-router/release.yml?branch=main&color=95FF38&style=flat-square" />
+</p>
+
+---
+
 `itty-fs-router` is a powerful file-system router. You can use the file-system to define routes, instead of defining them all in one place, allowing you to organize your routes in a way that makes sense for your project.
 
 Under the hood, this tooling uses [`itty-router`](https://github.com/kwhitley/itty-router). Itty is an incredibly small and feature-rich router, with super fast performance.
