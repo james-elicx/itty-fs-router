@@ -13,6 +13,7 @@
 		"@fixtures/basic-route-options",
 		"@fixtures/itty-params",
 		"@fixtures/with-cli-args",
+		"@fixtures/pages-target-basic",
 		"@examples/basic-api"
 	]
 }

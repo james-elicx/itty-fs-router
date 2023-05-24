@@ -9,9 +9,12 @@ export type Worker = {
 	fetch: (path: string, opts?: RequestInit) => Promise<FetchResponse>;
 };
 
-export const createWorker = async (filePath: string): Promise<Worker> => {
+export const createWorker = async (filePath: string, assetsDir?: string): Promise<Worker> => {
 	const worker = await unstable_dev(filePath, {
-		experimental: { disableExperimentalWarning: true },
+		experimental: {
+			disableExperimentalWarning: true,
+			enablePagesAssetsServiceBinding: assetsDir ? { directory: assetsDir } : undefined,
+		},
 		compatibilityDate: '2023-05-18',
 	});
 

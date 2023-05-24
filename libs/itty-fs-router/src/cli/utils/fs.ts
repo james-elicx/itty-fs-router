@@ -12,15 +12,15 @@ export const normalizePath = (path: string): string =>
 	path.replace(/\\/g, '/').replace(/\/\//g, '/');
 
 /**
- * Reads a directory's file paths recursively, filtering for `.js` and `.ts` files.
+ * Reads a directory's file paths recursively, filtering for `.js` and `.ts` files by default.
  *
  * @param dir Directory to read.
  * @returns Array of file paths.
  */
-export const readPathsRecursively = (dir: string): string[] => [
+export const readPathsRecursively = (dir: string, disableFilter = false): string[] => [
 	...new Set(
 		readdirSync(dir)
-			.filter((path) => /^.+(\.[jt]s)?$/.test(path))
+			.filter((path) => (disableFilter ? true : /^.+(\.[jt]s)?$/.test(path)))
 			.map((path) => normalizePath(resolve(dir, path)))
 			.map((path) =>
 				goErrSync(() => statSync(path).isDirectory())[0] ? readPathsRecursively(path) : [path],
