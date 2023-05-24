@@ -1,11 +1,12 @@
-import { existsSync } from 'node:fs';
+import { cpSync, existsSync } from 'node:fs';
 import { rm, mkdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
 import type { ProcessedRoute } from './routes';
 import type { Args } from './utils';
+import { readPathsRecursively } from './utils';
 
 // eslint-disable-next-line no-underscore-dangle, @typescript-eslint/naming-convention
 const __filename = fileURLToPath(import.meta.url);
@@ -34,7 +35,13 @@ const getRoutesStr = (routes: ProcessedRoute[]): string => {
  */
 export const buildWorker = async (
 	routes: ProcessedRoute[],
-	{ basePath, skipMinify, outDir }: Pick<Args, 'basePath' | 'skipMinify' | 'outDir'>,
+	{
+		basePath,
+		skipMinify,
+		rootDir,
+		outDir,
+		target,
+	}: Pick<Args, 'basePath' | 'skipMinify' | 'rootDir' | 'outDir' | 'target'>,
 ) => {
 	// Write the routes to a temporary file so they can be injected
 	const tempRoutesFile = join(tmpdir(), `itty-fs-${Math.random().toString(36).slice(2)}.js`);
@@ -46,16 +53,30 @@ export const buildWorker = async (
 	}
 	await mkdir(outDir, { recursive: true });
 
-	const outputFile = /\.[cm]?[jt]s$/.test(outDir) ? outDir : `${outDir}/index.js`;
+	const outDirIsFile = /\.[cm]?[jt]s$/.test(outDir);
+	const outputFileName = target === 'pages' ? '_worker.js' : 'index.js';
+	const outputFile = outDirIsFile ? outDir : `${outDir}/${outputFileName}`;
+
+	// Handle `/public` directory in pages mode.
+	const publicDir = resolve(rootDir, '..', outDirIsFile ? '..' : '', 'public');
+	let assets: Record<string, true> | undefined;
+	if (target === 'pages' && existsSync(publicDir)) {
+		assets = readPathsRecursively(publicDir)
+			.map((path) => `/${relative(publicDir, path)}`)
+			.reduce((acc, path) => ({ ...acc, [path]: true }), {});
+
+		cpSync(publicDir, outDir, { recursive: true });
+	}
 
 	return build({
-		entryPoints: [resolve(__dirname, 'template')],
+		entryPoints: [resolve(__dirname, 'template', `${target}.js`)],
 		bundle: true,
 		inject: [tempRoutesFile],
 		target: 'es2022',
 		platform: 'neutral',
 		define: {
 			__BASE__: JSON.stringify(basePath),
+			...(target === 'pages' && { __ASSETS__: JSON.stringify(assets || {}) }),
 		},
 		outfile: outputFile,
 		minify: !skipMinify,

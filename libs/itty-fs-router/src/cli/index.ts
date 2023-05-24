@@ -7,7 +7,7 @@ import { readPathsRecursively, printHelpMessage, args, logger } from './utils';
  * Run the CLI.
  */
 export const run = async (): Promise<void> => {
-	const { basePath, rootDir, outDir, skipMinify, help } = args;
+	const { basePath, rootDir, outDir, skipMinify, help, target } = args;
 
 	if (help) {
 		printHelpMessage();
@@ -22,7 +22,7 @@ export const run = async (): Promise<void> => {
 	const collectedRoutes = readPathsRecursively(rootDir);
 	const processedRoutes = processRoutes(collectedRoutes, { basePath, rootDir });
 
-	await buildWorker(processedRoutes, { basePath, skipMinify, outDir });
+	await buildWorker(processedRoutes, { basePath, skipMinify, rootDir, outDir, target });
 };
 
 run();

@@ -27,18 +27,41 @@ const directoryFlag = ({ name, fallback }: DirectoryFlagArgs) =>
 
 const options = z
 	.object({
-		help: booleanFlag,
-		silent: booleanFlag,
-		skipMinify: booleanFlag,
+		help: booleanFlag.describe(JSON.stringify({ msg: 'Show this help message.', fb: 'false' })),
+		silent: booleanFlag.describe(JSON.stringify({ msg: 'Silence all CLI logging.', fb: 'false' })),
+		skipMinify: booleanFlag.describe(
+			JSON.stringify({ msg: 'Skip minification of the generated worker.', fb: 'false' }),
+		),
 		basePath: z
 			.string()
 			.optional()
 			.default('')
-			.transform((path) => (/^\//.test(path) ? path : `/${path}`)),
-		rootDir: directoryFlag({ name: 'root', fallback: 'src' }),
-		outDir: directoryFlag({ name: 'output', fallback: 'dist' }),
+			.transform((path) => (/^\//.test(path) ? path : `/${path}`))
+			.describe(JSON.stringify({ msg: 'Base path for the router.', fb: '' })),
+		rootDir: directoryFlag({ name: 'root', fallback: 'src' }).describe(
+			JSON.stringify({ msg: 'Root directory for the project.', fb: 'src' }),
+		),
+		outDir: directoryFlag({ name: 'output', fallback: 'dist' }).describe(
+			JSON.stringify({ msg: 'Output directory for the generated worker.', fb: 'dist' }),
+		),
+		target: z
+			.union([z.literal('workers'), z.literal('pages')])
+			.optional()
+			.default('workers')
+			.describe(
+				JSON.stringify({ msg: 'Platform to target; "workers" or "pages".', fb: 'workers' }),
+			),
 	})
 	.strict();
+
+const aliases: { [key: string]: keyof Args } = {
+	h: 'help',
+};
+
+const invertedAliases = Object.entries(aliases).reduce(
+	(acc, [key, value]) => ({ ...acc, [value]: key }),
+	{} as { [key in keyof Args]?: string },
+);
 
 /**
  * Determines the pluralization for an array.
@@ -89,17 +112,38 @@ const parseCliError = (e: Error | z.ZodError | unknown): ParseCliErrorReturns =>
  * Prints the help message.
  */
 export const printHelpMessage = () => {
-	console.log(`
-  Usage: itty-fs-router [options]
+	const opts = Object.entries(options.shape)
+		.map(([key, opt]) => {
+			const argKey = key
+				.split(/(?=[A-Z])/)
+				.map((s) => s.toLowerCase())
+				.join('-');
 
-  Options:
-    --help             Show this help message
-    --silent           Don't log anything to the console
-    --skip-minify      Don't minify the output
-    --root-dir         The root directory to search for files in
-    --out-dir          The output directory to write the router to
-    --base-path        The base path to use for the router
-  `);
+			const alias = invertedAliases[key as keyof Args];
+			const aliasStr = alias ? `-${alias},` : '   ';
+
+			const filler = ' '.repeat(22 - argKey.length - aliasStr.length - 1);
+
+			const { msg, fb } = JSON.parse(opt.description || '{}') as { msg?: string; fb?: string };
+
+			const descArr = msg?.match(/.{1,50}(\s|$)/g) || [''];
+			const desc = descArr
+				.map((d) => `${d}${' '.repeat(50 - d.length)}`)
+				.join(`\n${' '.repeat(27)}`);
+
+			const defaultVal = fb !== undefined ? `[default: ${JSON.stringify(fb)}]` : '';
+
+			return `  ${aliasStr} --${argKey} ${filler} ${desc} ${defaultVal}`;
+		})
+		.join('\n');
+
+	console.log(`
+Usage: itty-fs-router [options]
+
+Options:
+
+${opts}
+`);
 };
 
 /**
@@ -109,7 +153,7 @@ export const printHelpMessage = () => {
  */
 export const parseArgs = (): Args => {
 	try {
-		return argumentParser({ options }).parse(process.argv.slice(2));
+		return argumentParser({ options, aliases }).parse(process.argv.slice(2));
 	} catch (e) {
 		const { text, showHelp } = parseCliError(e);
 

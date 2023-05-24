@@ -13,6 +13,7 @@ suite('parseArgs', () => {
 			outDir: expect.stringMatching(/.+\/itty-fs-router\/dist$/),
 			rootDir: expect.stringMatching(/.+\/itty-fs-router\/src$/),
 			silent: false,
+			target: 'workers',
 		});
 	});
 
@@ -26,6 +27,7 @@ suite('parseArgs', () => {
 			'--base-path=test',
 			'--out-dir=./src/cli',
 			'--root-dir=src/cli',
+			'--target=pages',
 		];
 
 		expect(parseArgs()).toEqual({
@@ -35,6 +37,7 @@ suite('parseArgs', () => {
 			outDir: expect.stringMatching(/.+\/itty-fs-router\/src\/cli$/),
 			rootDir: expect.stringMatching(/.+\/itty-fs-router\/src\/cli$/),
 			silent: true,
+			target: 'pages',
 		});
 	});
 
@@ -71,7 +74,9 @@ suite('parseArgs', () => {
 		consoleMock.mockRestore();
 
 		expect(consoleLogMock).toHaveBeenCalledTimes(1);
-		expect(consoleLogMock).toHaveBeenCalledWith(expect.stringMatching(/Usage: itty-fs-router/));
+		expect(consoleLogMock).toHaveBeenCalledWith(
+			expect.stringMatching(/Usage: itty-fs-router \[options\]/),
+		);
 		consoleLogMock.mockRestore();
 	});
 });
