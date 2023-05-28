@@ -28,12 +28,32 @@ export const GET: RouteHandler = (req) => {
 
 ## Per-Route-Level Middleware
 
-Defining middleware at a certain route level, i.e. affecting all routes in a folder or subfolder, is not currently supported.
+You can also define a middleware function for all paths in a route group and its descendants with an `_middleware` file.
 
-It is a planned feature and will be coming soon.
+Like with per-route middleware, you can define the middleware to be for a specific method, or for all methods.
+
+```ts
+// path: ./src/foo/_middleware.ts
+
+import type { MiddlewareRouteHandler } from 'itty-fs-router';
+
+// GET /foo/*, POST /foo/*, PUT /foo/*, DELETE /foo/*, etc.
+export const ALL: MiddlewareRouteHandler = (req) => {
+	req.ctx['from-middleware-nested'] = 'Context from nested middleware';
+};
+```
 
 ## Global Middleware
 
-Defining global middleware that affects all routes is not currently supported.
+To define a global middleware handler, you can create a standard route group-level not found handler that exports the `ALL` method. This will mean that it catches all requests to any method.
 
-It is a planned feature and will be coming soon.
+```ts
+// path: ./src/_middleware.ts
+
+import type { MiddlewareRouteHandler } from 'itty-fs-router';
+
+// GET /*, POST /*, PUT /*, DELETE /*, etc.
+export const ALL: MiddlewareRouteHandler = (req) => {
+	req.ctx['from-middleware-root'] = 'Context from root middleware';
+};
+```

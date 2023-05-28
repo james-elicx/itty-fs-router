@@ -28,7 +28,7 @@ suite('fs', () => {
 		});
 
 		test('gets nested files', () => {
-			const expected = ['/a.ts', '/b.ts', '/nested/c.ts', '/nested/nested/d.ts'];
+			const expected = ['/nested/c.ts', '/nested/nested/d.ts', '/a.ts', '/b.ts'];
 			const result = readPathsRecursively('.').map((path) =>
 				path.replace(normalizePath(resolve()), ''),
 			);
@@ -49,6 +49,12 @@ suite('fs', () => {
 
 		test('squash index', () => {
 			expect(squashPath('a/index')).toEqual('a');
+		});
+
+		test('squash middleware/not-found files', () => {
+			expect(squashPath('a/_not-found.ts')).toEqual('a');
+			expect(squashPath('a/_notFound.ts')).toEqual('a');
+			expect(squashPath('a/_middleware.ts')).toEqual('a');
 		});
 	});
 

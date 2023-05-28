@@ -25,6 +25,8 @@ export const readPathsRecursively = (dir: string, disableFilter = false): string
 			.map((path) =>
 				goErrSync(() => statSync(path).isDirectory())[0] ? readPathsRecursively(path) : [path],
 			)
+			// make sure directories are before files
+			.sort((a, b) => (a.length > b.length ? -1 : 1))
 			.flat(),
 	),
 ];
@@ -35,6 +37,7 @@ export const readPathsRecursively = (dir: string, disableFilter = false): string
  * - Remove double slashes.
  * - Remove file extensions.
  * - Remove `/index`.
+ * - Remove `/_middleware`, `/_notFound`, and `/_not-found`.
  *
  * @param path Path name to squash.
  * @returns Squashed path name.
@@ -42,7 +45,8 @@ export const readPathsRecursively = (dir: string, disableFilter = false): string
 export const squashPath = (path: string): string =>
 	path
 		.replace(/\/\//, '/')
-		.replace(/\.[tj]s$/, '')
+		.replace(/\/_(middleware|notFound|not-found)\.[jt]s$/, '')
+		.replace(/\.[jt]s$/, '')
 		.replace(/\/index$/, '');
 
 /**

@@ -10,10 +10,12 @@
 	"ignore": [
 		"@fixtures/utils",
 		"@fixtures/basic-method-routes",
-		"@fixtures/basic-route-options",
+		"@fixtures/basic-route-options-v3",
+		"@fixtures/basic-route-options-v4",
 		"@fixtures/itty-params",
-		"@fixtures/with-cli-args",
+		"@fixtures/middleware-and-not-found",
 		"@fixtures/pages-target-basic",
+		"@fixtures/with-cli-args",
 		"@examples/basic-api"
 	]
 }

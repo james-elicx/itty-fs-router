@@ -1,4 +1,5 @@
 import { relative } from 'node:path';
+import type { ExportedDeclarations } from 'ts-morph';
 import {
 	getExportedOptionKeys,
 	groupExportedDeclarations,
@@ -11,9 +12,7 @@ import {
 	createProject,
 	logger,
 } from './utils';
-import type { Args, GroupedExportedDeclarations, OptionExport } from './utils';
-
-// TODO: `_config` for that directory and its descendants.
+import type { Args, OptionExport } from './utils';
 
 export const transformSyntax = (route: string) =>
 	route
@@ -53,13 +52,13 @@ const createRouteExpression = (route: string) =>
  * @param args.route Route path for the option.
  * @param args.wildcard Whether the option is a wildcard.
  */
-export const addOptionRoutes = (
+export const addRouteOptions = (
 	routes: ProcessedRoute[],
-	options: GroupedExportedDeclarations['options'],
+	declarations: ExportedDeclarations[] | undefined,
 	option: OptionExport,
 	{ path, route, wildcard }: { path: string; route: string; wildcard?: boolean },
 ) => {
-	const methods = getExportedOptionKeys(options.get(option), validMethods);
+	const methods = getExportedOptionKeys(declarations, validMethods);
 	for (const method of methods) {
 		routes.push([
 			method,
@@ -69,54 +68,126 @@ export const addOptionRoutes = (
 	}
 };
 
-export type ProcessedRoute = [string, RegExp, string[]];
+type GroupedRoutes = {
+	config: string[];
+	middleware: string[];
+	notFound: string[];
+	routes: string[];
+};
 
 /**
- * Processes the routes so that they can be passed to Itty.
+ * Groups the paths of the routes, middleware, not found files, and config files.
+ *
+ * @param routes List of route paths.
+ * @returns An object with the paths grouped by config, middleware, not found, and routes.
+ */
+export const groupRoutePaths = (routes: string[]) => {
+	const configRegExp = /.+_config\.[jt]s$/;
+	const middlewareRegExp = /.+_middleware\.[jt]s$/;
+	const notFoundRegExp = /.+_(notFound|not-found)\.[jt]s$/;
+
+	return routes.reduce<GroupedRoutes>(
+		(acc, route) => {
+			if (configRegExp.test(route)) acc.config.push(route);
+			else if (middlewareRegExp.test(route)) acc.middleware.push(route);
+			else if (notFoundRegExp.test(route)) acc.notFound.push(route);
+			else acc.routes.push(route);
+			return acc;
+		},
+		{ config: [], middleware: [], notFound: [], routes: [] },
+	);
+};
+
+export type ProcessedRoute = [string, RegExp, string[]];
+type ProcessArgs = { methodsOnly?: boolean; shouldLog?: boolean; wildcard?: boolean };
+
+/**
+ * Creates a file handler for the route paths.
  *
  * @param routes Array of route paths.
  * @param args The root directory and base path.
- * @returns Processed routes to pass to Itty.
+ * @returns An object with methods to handle and finish processing the routes, as well as the grouped paths.
  */
-export const processRoutes = (
-	routes: string[],
+export const createFileHandler = (
+	paths: string[],
 	{ rootDir, basePath }: Pick<Args, 'basePath' | 'rootDir'>,
-): ProcessedRoute[] => {
-	const finalRoutes: ProcessedRoute[] = [];
-
-	const configRegExp = /.+_config\.[jt]s$/;
-	// const configPaths = routes.filter((route) => configRegExp.test(route));
-	const routePaths = routes.filter((route) => !configRegExp.test(route));
-
-	const project = createProject(routes);
-
+) => {
 	if (basePath) logger.log(`Using base path: ${basePath}`);
 
-	// TODO: Support for `_config` files before the route files.
+	const groupedPaths = groupRoutePaths(paths);
+	const project = createProject(paths);
 
-	for (const path of routePaths) {
-		const route = squashPath(normalizePath(`${basePath}/${relative(rootDir, path)}`));
-		logger.log(`Processing route \`${route || '/'}\`...`);
+	const finalRoutes: ProcessedRoute[] = [];
 
-		const srcFile = getSrcFile(project, path);
-		const exportedDeclarations = getValidExportedDeclarations(srcFile);
-
-		const { methods, options } = groupExportedDeclarations(exportedDeclarations);
-
-		addOptionRoutes(finalRoutes, options, 'middleware', { path, route });
-
-		for (const [method] of methods) {
-			finalRoutes.push([method, createRouteExpression(route), [createRequire(path, method)]]);
+	const processPaths = (
+		routePaths: string[],
+		{ methodsOnly, shouldLog, wildcard }: ProcessArgs = {},
+	) => {
+		if (shouldLog) {
+			const plural = routePaths.length > 1 ? 's' : '';
+			logger.log(`Processing ${routePaths.length} route${plural}...`);
 		}
 
-		addOptionRoutes(finalRoutes, options, 'notFound', { path, route });
-	}
+		for (const path of routePaths) {
+			const route = squashPath(normalizePath(`${basePath}/${relative(rootDir, path)}`)) || '/';
 
-	finalRoutes.push([
-		'ALL',
-		createRouteExpression('*'),
-		['() => new Response("Not found", { status: 404 })'],
-	]);
+			const srcFile = getSrcFile(project, path);
 
-	return finalRoutes;
+			const exportedDeclarations = getValidExportedDeclarations(srcFile, methodsOnly);
+			const { methods, options } = groupExportedDeclarations(exportedDeclarations);
+
+			addRouteOptions(finalRoutes, options.get('middleware'), 'middleware', { path, route });
+
+			for (const [method] of methods) {
+				finalRoutes.push([
+					method,
+					createRouteExpression(`${route}${wildcard ? '*' : ''}`),
+					[createRequire(path, method)],
+				]);
+			}
+
+			addRouteOptions(finalRoutes, options.get('notFound'), 'notFound', { path, route });
+		}
+	};
+
+	return {
+		/**
+		 * The file paths, grouped by routes, middleware, not found files, and config files.
+		 */
+		files: groupedPaths,
+
+		/**
+		 * Processes a set of routes, middleware, or not found files.
+		 *
+		 * @param routePaths The paths of the routes to process.
+		 * @param args Options for processing a path.
+		 */
+		process: processPaths,
+
+		/**
+		 * Processes the grouped route paths.
+		 *
+		 * @param files Grouped route paths.
+		 */
+		processGroup: (files: GroupedRoutes) => {
+			processPaths(files.middleware, { methodsOnly: true, wildcard: true });
+			processPaths(files.routes, { shouldLog: true });
+			processPaths(files.notFound, { methodsOnly: true, wildcard: true });
+		},
+
+		/**
+		 * Retrieves the processed routes.
+		 *
+		 * @returns Processed routes to pass to Itty.
+		 */
+		getProcessedRoutes: () => {
+			finalRoutes.push([
+				'ALL',
+				createRouteExpression('*'),
+				['() => new Response("Not found", { status: 404 })'],
+			]);
+
+			return finalRoutes;
+		},
+	};
 };

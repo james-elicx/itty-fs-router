@@ -58,10 +58,11 @@ export const getSrcFile = (project: Project, path: string): SourceFile => {
  */
 export const getValidExportedDeclarations = (
 	src: SourceFile,
+	methodsOnly = false,
 ): Map<ValidExport, ExportedDeclarations[]> =>
 	new Map<ValidExport, ExportedDeclarations[]>(
 		[...(src.getExportedDeclarations() as Map<ValidExport, ExportedDeclarations[]>)].filter(
-			([key]) => validExports.includes(key),
+			([key]) => (methodsOnly ? validMethods : validExports).includes(key),
 		),
 	);
 

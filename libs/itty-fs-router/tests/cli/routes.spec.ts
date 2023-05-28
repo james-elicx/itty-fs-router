@@ -1,11 +1,5 @@
 import mockFs from 'mock-fs';
 import {
-	addOptionRoutes,
-	processRoutes,
-	type ProcessedRoute,
-	transformSyntax,
-} from 'src/cli/routes';
-import {
 	createProject,
 	getSrcFile,
 	getValidExportedDeclarations,
@@ -14,6 +8,13 @@ import {
 } from 'src/cli/utils';
 import type { Project } from 'ts-morph';
 import { suite, test, expect, beforeAll, afterAll } from 'vitest';
+import type { ProcessedRoute } from '../../src/cli/routes';
+import {
+	groupRoutePaths,
+	addRouteOptions,
+	createFileHandler,
+	transformSyntax,
+} from '../../src/cli/routes';
 import { mockConsoleLog } from '../_helpers';
 
 suite('routes', () => {
@@ -33,6 +34,12 @@ suite('routes', () => {
 				'mixed-valid.ts': `export const GET = "foo"; export const middleware = { GET: "" };`,
 				'invalid.ts': `import { GET } from "./get"; export const invalid = { GET };`,
 			},
+			'all-types': {
+				'_config.ts': `export const config = { basePath: "" };`,
+				'_middleware.ts': `export const GET = "middleware";`,
+				'_not-found.ts': `export const GET = "not found";`,
+				'index.ts': `export const GET = "index";`,
+			},
 		});
 
 		project = createProject(readPathsRecursively('.'));
@@ -42,21 +49,40 @@ suite('routes', () => {
 		mockFs.restore();
 	});
 
-	suite('addOptionRoutes', () => {
+	suite('addRouteOptions', () => {
 		test('should append valid middleware option routes', () => {
 			const { options } = groupExportedDeclarations(
 				getValidExportedDeclarations(getSrcFile(project, 'mixed-valid.ts')),
 			);
 
 			const arr: ProcessedRoute[] = [];
-			addOptionRoutes(arr, options, 'middleware', { path: 'mixed-valid.ts', route: 'foo' });
+			addRouteOptions(arr, options.get('middleware'), 'middleware', {
+				path: 'mixed-valid.ts',
+				route: 'foo',
+			});
 
 			const expected = [['GET', /^foo\/*$/, ['require("mixed-valid.ts").middleware.GET']]];
 			expect(arr).toEqual(expected);
 		});
 	});
 
-	suite('processRoutes', () => {
+	suite('groupRoutePaths', () => {
+		test('should group different files into the correct categories', () => {
+			const routes = readPathsRecursively('./all-types');
+			const grouped = groupRoutePaths(routes);
+
+			const expected = {
+				config: [expect.stringMatching(/\/all-types\/_config\.ts$/)],
+				middleware: [expect.stringMatching(/\/all-types\/_middleware\.ts$/)],
+				notFound: [expect.stringMatching(/\/all-types\/_not-found\.ts$/)],
+				routes: [expect.stringMatching(/\/all-types\/index\.ts$/)],
+			};
+
+			expect(grouped).toEqual(expected);
+		});
+	});
+
+	suite('createFileHandler', () => {
 		test('processes multiple routes correctly', () => {
 			const consoleMock = mockConsoleLog();
 			const routes = [
@@ -68,7 +94,9 @@ suite('routes', () => {
 
 			const rootDir = 'src';
 			const basePath = '';
-			const processedRoutes = processRoutes(routes, { rootDir: 'src', basePath: '' });
+			const { files, ...fileHandler } = createFileHandler(routes, { rootDir, basePath });
+
+			fileHandler.processGroup(files);
 
 			const expected = [
 				['GET', /^\/get\/*$/, ['require("src/get.ts").GET']],
@@ -78,14 +106,10 @@ suite('routes', () => {
 				['GET', /^\/mixed-valid\/*$/, ['require("src/mixed-valid.ts").GET']],
 				['ALL', /^(.*)?\/*$/, ['() => new Response("Not found", { status: 404 })']],
 			];
-			expect(processedRoutes).toEqual(expected);
+			expect(fileHandler.getProcessedRoutes()).toEqual(expected);
 
-			expect(consoleMock).toHaveBeenCalledTimes(routes.length);
-			routes.forEach((path) => {
-				expect(consoleMock).toHaveBeenCalledWith(
-					`Processing route \`${path.replace(rootDir, basePath).replace('.ts', '')}\`...`,
-				);
-			});
+			expect(consoleMock).toHaveBeenCalledTimes(1);
+			expect(consoleMock).toHaveBeenCalledWith(`Processing ${routes.length} routes...`);
 			consoleMock.mockRestore();
 		});
 
@@ -100,7 +124,9 @@ suite('routes', () => {
 
 			const rootDir = 'custom-src';
 			const basePath = '';
-			const processedRoutes = processRoutes(routes, { rootDir, basePath });
+			const { files, ...fileHandler } = createFileHandler(routes, { rootDir, basePath });
+
+			fileHandler.processGroup(files);
 
 			const expected = [
 				['GET', /^\/get\/*$/, ['require("custom-src/get.ts").GET']],
@@ -110,14 +136,10 @@ suite('routes', () => {
 				['GET', /^\/mixed-valid\/*$/, ['require("custom-src/mixed-valid.ts").GET']],
 				['ALL', /^(.*)?\/*$/, ['() => new Response("Not found", { status: 404 })']],
 			];
-			expect(processedRoutes).toEqual(expected);
+			expect(fileHandler.getProcessedRoutes()).toEqual(expected);
 
-			expect(consoleMock).toHaveBeenCalledTimes(routes.length);
-			routes.forEach((path) => {
-				expect(consoleMock).toHaveBeenCalledWith(
-					`Processing route \`${path.replace(rootDir, basePath).replace('.ts', '')}\`...`,
-				);
-			});
+			expect(consoleMock).toHaveBeenCalledTimes(1);
+			expect(consoleMock).toHaveBeenCalledWith(`Processing ${routes.length} routes...`);
 			consoleMock.mockRestore();
 		});
 
@@ -132,7 +154,9 @@ suite('routes', () => {
 
 			const rootDir = 'src';
 			const basePath = '/base/path';
-			const processedRoutes = processRoutes(routes, { rootDir, basePath });
+			const { files, ...fileHandler } = createFileHandler(routes, { rootDir, basePath });
+
+			fileHandler.processGroup(files);
 
 			const expected = [
 				['GET', /^\/base\/path\/get\/*$/, ['require("src/get.ts").GET']],
@@ -142,14 +166,10 @@ suite('routes', () => {
 				['GET', /^\/base\/path\/mixed-valid\/*$/, ['require("src/mixed-valid.ts").GET']],
 				['ALL', /^(.*)?\/*$/, ['() => new Response("Not found", { status: 404 })']],
 			];
-			expect(processedRoutes).toEqual(expected);
+			expect(fileHandler.getProcessedRoutes()).toEqual(expected);
 
-			expect(consoleMock).toHaveBeenCalledTimes(routes.length + 1);
-			routes.forEach((path) => {
-				expect(consoleMock).toHaveBeenCalledWith(
-					`Processing route \`${path.replace(rootDir, basePath).replace('.ts', '')}\`...`,
-				);
-			});
+			expect(consoleMock).toHaveBeenCalledTimes(2);
+			expect(consoleMock).toHaveBeenCalledWith(`Processing ${routes.length} routes...`);
 			expect(consoleMock).toHaveBeenCalledWith(`Using base path: ${basePath}`);
 			consoleMock.mockRestore();
 		});

@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { buildWorker } from './build';
-import { processRoutes } from './routes';
+import { createFileHandler } from './routes';
 import { readPathsRecursively, printHelpMessage, args, logger } from './utils';
 
 /**
@@ -20,7 +20,10 @@ export const run = async (): Promise<void> => {
 	}
 
 	const collectedRoutes = readPathsRecursively(rootDir);
-	const processedRoutes = processRoutes(collectedRoutes, { basePath, rootDir });
+	const { files, ...fileHandler } = createFileHandler(collectedRoutes, { basePath, rootDir });
+	fileHandler.processGroup(files);
+
+	const processedRoutes = fileHandler.getProcessedRoutes();
 
 	await buildWorker(processedRoutes, { basePath, skipMinify, rootDir, outDir, target });
 };
