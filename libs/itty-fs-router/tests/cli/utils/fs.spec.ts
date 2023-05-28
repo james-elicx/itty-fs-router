@@ -50,6 +50,12 @@ suite('fs', () => {
 		test('squash index', () => {
 			expect(squashPath('a/index')).toEqual('a');
 		});
+
+		test('squash middleware/not-found files', () => {
+			expect(squashPath('a/_not-found.ts')).toEqual('a');
+			expect(squashPath('a/_notFound.ts')).toEqual('a');
+			expect(squashPath('a/_middleware.ts')).toEqual('a');
+		});
 	});
 
 	suite('createRequire', () => {

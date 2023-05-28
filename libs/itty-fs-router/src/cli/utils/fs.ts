@@ -37,6 +37,7 @@ export const readPathsRecursively = (dir: string, disableFilter = false): string
  * - Remove double slashes.
  * - Remove file extensions.
  * - Remove `/index`.
+ * - Remove `/_middleware`, `/_notFound`, and `/_not-found`.
  *
  * @param path Path name to squash.
  * @returns Squashed path name.
@@ -44,7 +45,8 @@ export const readPathsRecursively = (dir: string, disableFilter = false): string
 export const squashPath = (path: string): string =>
 	path
 		.replace(/\/\//, '/')
-		.replace(/\.[tj]s$/, '')
+		.replace(/\/_(middleware|notFound|not-found)\.[jt]s$/, '')
+		.replace(/\.[jt]s$/, '')
 		.replace(/\/index$/, '');
 
 /**

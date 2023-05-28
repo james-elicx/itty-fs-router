@@ -30,12 +30,32 @@ export const notFound: NotFound = {
 
 ## Per-Route-Level Not Found
 
-Defining not found handlers at a certain route level, i.e. affecting all routes in a folder or subfolder, is not currently supported.
+You can also define a not found handler for all paths in a route group and its descendants with an `_not-found` file.
 
-It is a planned feature and will be coming soon.
+Like with per-route not found handlers, you can define the handler to be for a specific method, or for all methods.
+
+```ts
+// path: ./src/foo/_not-found.ts
+
+import type { NotFoundRouteHandler } from 'itty-fs-router';
+
+// GET /foo/*, POST /foo/*, PUT /foo/*, DELETE /foo/*, etc.
+export const ALL: NotFoundRouteHandler = () => {
+	return new Response('Not found (nested)', { status: 404 });
+};
+```
 
 ## Global Not Found
 
-Defining global not found handlers that affects all routes is not currently supported.
+To define a global not found handler, you can create a standard route group-level not found handler that exports the `ALL` method. This will mean that it catches all requests to any method.
 
-It is a planned feature and will be coming soon.
+```ts
+// path: ./src/_not-found.ts
+
+import type { NotFoundRouteHandler } from 'itty-fs-router';
+
+// GET /*, POST /*, PUT /*, DELETE /*, etc.
+export const ALL: NotFoundRouteHandler = () => {
+	return new Response('Not found (root)', { status: 404 });
+};
+```
