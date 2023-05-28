@@ -28,7 +28,7 @@ suite('fs', () => {
 		});
 
 		test('gets nested files', () => {
-			const expected = ['/a.ts', '/b.ts', '/nested/c.ts', '/nested/nested/d.ts'];
+			const expected = ['/nested/c.ts', '/nested/nested/d.ts', '/a.ts', '/b.ts'];
 			const result = readPathsRecursively('.').map((path) =>
 				path.replace(normalizePath(resolve()), ''),
 			);

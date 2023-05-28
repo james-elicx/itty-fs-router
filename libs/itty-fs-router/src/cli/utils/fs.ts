@@ -25,6 +25,8 @@ export const readPathsRecursively = (dir: string, disableFilter = false): string
 			.map((path) =>
 				goErrSync(() => statSync(path).isDirectory())[0] ? readPathsRecursively(path) : [path],
 			)
+			// make sure directories are before files
+			.sort((a, b) => (a.length > b.length ? -1 : 1))
 			.flat(),
 	),
 ];
