@@ -128,10 +128,6 @@ suite('routes', () => {
 
 			fileHandler.processGroup(files);
 
-			// fileHandler.process(files.middleware, { methodsOnly: true });
-			// fileHandler.process(files.routes, { shouldLog: true });
-			// fileHandler.process(files.notFound, { methodsOnly: true });
-
 			const expected = [
 				['GET', /^\/get\/*$/, ['require("custom-src/get.ts").GET']],
 				['GET', /^\/multiple-valid\/*$/, ['require("custom-src/multiple-valid.ts").GET']],

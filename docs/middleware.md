@@ -52,6 +52,7 @@ To define a global middleware handler, you can create a standard route group-lev
 
 import type { MiddlewareRouteHandler } from 'itty-fs-router';
 
+// GET /*, POST /*, PUT /*, DELETE /*, etc.
 export const ALL: MiddlewareRouteHandler = (req) => {
 	req.ctx['from-middleware-root'] = 'Context from root middleware';
 };

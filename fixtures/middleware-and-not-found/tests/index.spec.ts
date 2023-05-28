@@ -48,14 +48,14 @@ suite('Not found files', () => {
 		expect(resp.rawText).toMatchInlineSnapshot(`"Not found (root)"`);
 	});
 
-	test('Root group-level route only gets root + group not-found', async () => {
+	test('Root group-level route only gets group not-found', async () => {
 		const resp = await worker.fetch('/nested/invalid');
 
 		expect(resp.status).toEqual(404);
 		expect(resp.rawText).toMatchInlineSnapshot(`"Not found (nested)"`);
 	});
 
-	test('Root group-level route only gets root + group + route not-found', async () => {
+	test('Root group-level route only gets route not-found', async () => {
 		const resp = await worker.fetch('/nested/hello', { method: 'PUT' });
 
 		expect(resp.status).toEqual(404);
