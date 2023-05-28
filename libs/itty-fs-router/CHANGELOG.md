@@ -1,5 +1,17 @@
 # itty-fs-router
 
+## 0.3.0
+
+### Minor Changes
+
+- 2cf7f25: Ability to target Cloudflare Pages in addition to Workers when building, through the `--target` flag. The Pages build target has support for assets in a `/public` directory at the root of the project.
+- c5fa9df: Support for middleware and not found responses at the root-level and route group-level through `_middleware.ts` and `_not-found.ts`.
+- c5fa9df: Support for itty-router v4.
+
+### Patch Changes
+
+- c5fa9df: Fix precendence order for nested files, like middleware.
+
 ## 0.2.1
 
 ### Minor Changes
