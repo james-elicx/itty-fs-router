@@ -1,5 +1,5 @@
 {
-	"name": "@fixtures/basic-route-options",
+	"name": "@fixtures/basic-route-options-v4",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -22,6 +22,6 @@
 	},
 	"dependencies": {
 		"itty-fs-router": "workspace:^",
-		"itty-router": "^3.0.11"
+		"itty-router": "^4.0.5"
 	}
 }

@@ -19,8 +19,8 @@ importers:
         specifier: workspace:^
         version: link:../../libs/itty-fs-router/dist
       itty-router:
-        specifier: 4.0.0-next.52
-        version: 4.0.0-next.52
+        specifier: 4.0.5
+        version: 4.0.5
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20230404.0
@@ -112,7 +112,7 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
 
-  fixtures/basic-route-options:
+  fixtures/basic-route-options-v3:
     dependencies:
       itty-fs-router:
         specifier: workspace:^
@@ -120,6 +120,46 @@ importers:
       itty-router:
         specifier: ^3.0.11
         version: 3.0.11
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20230511.0
+        version: 4.20230511.0
+      '@fixtures/utils':
+        specifier: workspace:^
+        version: link:../_utils
+      '@tsconfig/strictest':
+        specifier: ^2.0.1
+        version: 2.0.1
+      eslint:
+        specifier: ^8.41.0
+        version: 8.41.0
+      eslint-config-ixn:
+        specifier: ^1.4.2
+        version: 1.4.2(eslint@8.41.0)(prettier@2.8.8)(typescript@5.0.4)
+      prettier:
+        specifier: ^2.8.8
+        version: 2.8.8
+      typescript:
+        specifier: ^5.0.4
+        version: 5.0.4
+      vite:
+        specifier: ^4.3.5
+        version: 4.3.5(@types/node@18.15.11)
+      vitest:
+        specifier: ^0.31.0
+        version: 0.31.0
+      wrangler:
+        specifier: ^3.0.0
+        version: 3.0.0
+
+  fixtures/basic-route-options-v4:
+    dependencies:
+      itty-fs-router:
+        specifier: workspace:^
+        version: link:../../libs/itty-fs-router/dist
+      itty-router:
+        specifier: ^4.0.5
+        version: 4.0.5
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20230511.0
@@ -278,7 +318,7 @@ importers:
         specifier: ^0.17.17
         version: 0.17.17
       itty-router:
-        specifier: ^3.0.11
+        specifier: ^3.0.0 || ^4.0.0
         version: 3.0.11
       ts-morph:
         specifier: ^18.0.0
@@ -4418,10 +4458,10 @@ packages:
       }
     dev: false
 
-  /itty-router@4.0.0-next.52:
+  /itty-router@4.0.5:
     resolution:
       {
-        integrity: sha512-lFuvGg+ekXebnTHm2AulNlYpSpqjIxnPJOD287TCyjFS2vP2DK5/6IDG2M5AqR48FmeWTi+UzKZT8D1ZMYmyug==,
+        integrity: sha512-cY4+c+K8uU8VIvUtALCVZj8lFVecAXZtJfV5lNZbh/9x2RnP6Yu6iSuLH/dpRwXm/wwsDh2lNNfENKipGxgfIw==,
       }
     dev: false
 
